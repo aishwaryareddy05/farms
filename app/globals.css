@@ -13,9 +13,9 @@
   --card-border: #E5E7EB;
   
   /* Semantic tokens mapped to FarmBrand colors */
-  --background: #FFFFFF;
+  --background: #ffffff;
   --foreground: #111827;
-  --card: #FFFFFF;
+  --card: #ffffff;
   --card-foreground: #111827;
   --popover: #FFFFFF;
   --popover-foreground: #111827;
@@ -76,8 +76,21 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html, body {
+    background-color: #ffffff;
+    background-image: linear-gradient(
+      170deg,
+      rgba(165,132,52,0.10) 0%,
+      rgba(159,135,85,0.08) 15%,
+      rgba(136,146,39,0.10) 35%,
+      rgba(111,147,63,0.10) 55%,
+      rgba(54,129,31,0.12) 75%,
+      rgba(40,133,29,0.10) 100%
+    );
+    background-attachment: fixed;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
   }
 }
 

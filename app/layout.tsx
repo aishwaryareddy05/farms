@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google'
+import { Inter, Playfair_Display, JetBrains_Mono, Poppins } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -18,9 +18,15 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
 });
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: '--font-poppins',
+})
+
 export const metadata: Metadata = {
-  title: 'FarmBrand | Contract Farming for FMCG, HoReCa & Exporters',
-  description: 'Contract farming with full traceability. We grow it, document it, deliver it. FSSAI-compliant, NABL-tested produce for FMCG brands, HoReCa businesses, and exporters.',
+  title: 'Ayra Farm Labs — Farming as a Service | Telangana',
+  description: 'Professional farm management and contract farming for landowners, investors, and agri-businesses across Telangana.',
   generator: 'v0.app',
   keywords: ['contract farming', 'FMCG supply', 'agricultural supply chain', 'traceability', 'documented produce', 'export-ready produce'],
   icons: {
@@ -49,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth overflow-x-hidden">
-      <body className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} font-sans antialiased overflow-x-hidden`}>
+      <body className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} ${poppins.variable} font-sans antialiased overflow-x-hidden`}>
         {children}
         <Analytics />
       </body>

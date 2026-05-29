@@ -34,9 +34,166 @@ import {
 } from"lucide-react"
 
 // =============================================================================
+// =============================================================================
+// FOR WHOM — stacked flash cards
+// =============================================================================
+function ForWhomCards() {
+  const cards = [
+    {
+      label: "For the landowner",
+      icon: MapPin,
+      text: "A trusted operating partner who manages your land transparently, improves its productivity, and keeps you informed every step of the way.",
+      cta: "Partner with us",
+    },
+    {
+      label: "For the business",
+      icon: PackageCheck,
+      text: "A single accountable source for traceable, documented, quality-assured agricultural supply. No middlemen opacity. No season-to-season uncertainty.",
+      cta: "Get a quote",
+    },
+    {
+      label: "For the farmer",
+      icon: Sprout,
+      text: "An organised, supported way to grow. With the right knowledge, the right inputs, and a system that finally works in their favour.",
+      cta: "Join the network",
+    },
+  ]
+
+  const [active, setActive] = useState(0)
+  const [leaving, setLeaving] = useState(false)
+
+  const next = () => {
+    if (leaving) return
+    setLeaving(true)
+    setTimeout(() => {
+      setActive(i => (i + 1) % cards.length)
+      setLeaving(false)
+    }, 350)
+  }
+
+  return (
+    <div className="flex-1 flex flex-col gap-6 w-full">
+      {/* Stack */}
+      <div className="relative w-full" style={{ height: 460 }}>
+        {cards.map((card, i) => {
+          const offset = (i - active + cards.length) % cards.length
+          // 0 = front, 1 = middle, 2 = back
+          const isFront  = offset === 0
+          const isMid    = offset === 1
+          const isBack   = offset === 2
+
+          if (!isFront && !isMid && !isBack) return null
+
+          return (
+            <div
+              key={i}
+              onClick={isFront ? next : undefined}
+              className="absolute inset-0 rounded-2xl border p-10 flex flex-col"
+              style={{
+                background: "#F0FDF4",
+                border: "1.5px solid #BBF7D0",
+                boxShadow: isFront
+                  ? "0 8px 32px rgba(27,107,58,0.14)"
+                  : "0 2px 8px rgba(27,107,58,0.06)",
+                transform: isFront
+                  ? leaving ? "translateY(-12px) scale(0.94) rotate(-2deg)" : "translateY(0) scale(1) rotate(0deg)"
+                  : isMid
+                  ? "translateY(18px) scale(0.95) rotate(1.5deg)"
+                  : "translateY(32px) scale(0.90) rotate(-1deg)",
+                zIndex: isFront ? 3 : isMid ? 2 : 1,
+                opacity: isFront ? (leaving ? 0 : 1) : isMid ? 0.85 : 0.6,
+                cursor: isFront ? "pointer" : "default",
+                transition: "transform 0.35s ease, opacity 0.35s ease",
+                pointerEvents: isFront ? "auto" : "none",
+              }}
+            >
+              {isFront && (
+                <>
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 flex-shrink-0"
+                    style={{ background: "rgba(27,107,58,0.08)" }}
+                  >
+                    <card.icon className="w-7 h-7" style={{ color: "#1B6B3A" }} />
+                  </div>
+                  <p className="text-xl font-bold text-[#111827] mb-4">{card.label}</p>
+                  <p className="text-[#4B5563] leading-relaxed flex-1">{card.text}</p>
+                  <div className="flex items-center justify-between mt-6">
+                    <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: "#1B6B3A" }}>
+                      {card.cta} <ArrowRight className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs text-[#9CA3AF]">tap to cycle →</span>
+                  </div>
+                </>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-2">
+        {cards.map((_, i) => (
+          <div
+            key={i}
+            className="rounded-full transition-all duration-300"
+            style={{
+              width: active === i ? 20 : 8,
+              height: 8,
+              background: active === i ? "#1B6B3A" : "#BBF7D0",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// =============================================================================
+function AnimatedFaaS() {
+  const fonts = [
+    { family: "var(--font-inter, sans-serif)",    weight: "900", style: "normal",  label: "FaaS" },
+    { family: "var(--font-playfair, serif)",       weight: "700", style: "italic",  label: "FaaS" },
+    { family: "var(--font-mono, monospace)",       weight: "800", style: "normal",  label: "FaaS" },
+    { family: "Georgia, serif",                    weight: "700", style: "normal",  label: "FaaS" },
+    { family: "var(--font-inter, sans-serif)",     weight: "900", style: "italic",  label: "FaaS" },
+  ]
+  const [idx, setIdx] = useState(0)
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false)
+      setTimeout(() => {
+        setIdx(prev => (prev + 1) % fonts.length)
+        setVisible(true)
+      }, 200)
+    }, 1800)
+    return () => clearInterval(interval)
+  }, [])
+
+  const f = fonts[idx]
+  return (
+    <span
+      style={{
+        fontFamily: f.family,
+        fontWeight: f.weight,
+        fontStyle: f.style,
+        color: "#1B6B3A",
+        display: "inline-block",
+        transition: "opacity 0.2s ease, transform 0.2s ease",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(6px)",
+      }}
+    >
+      FaaS
+    </span>
+  )
+}
+
+// =============================================================================
 // FADE IN ANIMATION WRAPPER
 // =============================================================================
-function FadeInSection({ children, className ="" }: { children: ReactNode; className?: string }) {
+function FadeInSection({ children, className ="", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -119,6 +276,14 @@ function AnimatedCounter({ target, suffix ="" }: { target: number; suffix?: stri
 // =============================================================================
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Always scroll to top on page load/refresh
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual'
+    }
+  }, [])
   const [scrolled, setScrolled] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [buyerType, setBuyerType] = useState<string | null>(null)
@@ -165,12 +330,12 @@ export default function LandingPage() {
     { label:"How It Works", id:"how-it-works" },
     { label:"Services", id:"services" },
     { label:"Traceability", id:"traceability" },
-    { label:"For Landowners", id:"landowners" },
-    { label:"About Us", id:"about" },
+    { label:"Why Ayra", id:"about" },
+    { label:"About Us", id:"team" },
     { label:"Contact", id:"contact" },
   ]
 
-  const buyerTypes = ["Brand / FMCG","HoReCa","Food Processor","Exporter","Landowner"]
+  const buyerTypes = ["Brand / FMCG","HoReCa","Food Processor","Exporter"]
 
   return (
     <main className="min-h-screen overflow-x-hidden w-full relative">
@@ -201,7 +366,7 @@ export default function LandingPage() {
             {/* Logo */}
             <div className="flex items-center gap-2">
               <Leaf className="w-7 h-7 text-[#1B6B3A]" />
-              <span className="text-xl font-bold text-[#111827]">FarmBrand</span>
+              <span className="text-xl font-bold text-[#111827]">Ayra Farm Labs</span>
             </div>
 
             {/* Desktop Nav */}
@@ -266,125 +431,188 @@ export default function LandingPage() {
       {/* ===================================================================== */}
       {/* SECTION 2: HERO */}
       {/* ===================================================================== */}
-      <section className="relative min-h-screen flex items-center pt-16 md:pt-20 overflow-hidden">
-        
-        
-        
-        
-        {/* Decorative Circle */}
-        <div 
-          className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-20"
-          style={{
-            background:"radial-gradient(circle, #1B6B3A 0%, transparent 70%)"
-          }}
-        />
-        
-        {/* Removed local background fade to prevent white glitch with global bg */}
+      <section className="relative overflow-hidden pt-20" style={{ minHeight: "100vh" }}>
+
+        {/* Full hero background image */}
+        <div className="absolute inset-0 pointer-events-none">
+          <img src="/farm-hero.jpg" alt="" className="w-full h-full object-cover opacity-25" />
+          {/* Light overlay so text stays readable */}
+          <div className="absolute inset-0"
+            style={{ background: "linear-gradient(to right, rgba(240,253,244,0.85) 0%, rgba(240,253,244,0.55) 45%, rgba(240,253,244,0.15) 100%)" }} />
+        </div>
 
         {/* Content */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-          <FadeInSection className="max-w-3xl">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1B6B3A]/[0.08] mb-6">
-              <Award className="w-4 h-4 text-[#1B6B3A]" />
-              <span className="text-sm font-medium text-[#1B6B3A]">
-                Incubated at AgHub — Agri-Tech Incubator
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          <div className="flex flex-col">
+
+            {/* LEFT — text */}
+            <div className="flex-1 lg:max-w-[65%] text-left z-10">
+              <FadeInSection>
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1B6B3A]/[0.07] border border-[#1B6B3A]/15 mb-8">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#1B6B3A] animate-pulse" />
+                  <span className="text-xs font-semibold tracking-wide text-[#1B6B3A] uppercase">
+                    Incubated · AgHub PJTSAU · Hyderabad
+                  </span>
+                </div>
+
+                {/* Headline */}
+                <h1 className="font-black tracking-tight text-[#0D1B0F] leading-[1.05] mb-5"
+                  style={{ fontSize: "clamp(3rem, 6.5vw, 5.8rem)", letterSpacing: "-0.02em", fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+                  India&apos;s first <span className="text-[#1B6B3A] italic"><AnimatedFaaS /></span>
+                  <br />Farms as a Service.
+                </h1>
+
+                {/* Subheadline */}
+                <p className="text-base md:text-lg leading-relaxed mb-4" style={{ color: "#374151" }}>
+                  We grow it. We document it.{" "}
+                  <span className="text-[#1B6B3A] font-semibold">We deliver it.</span>
+                </p>
+                <p className="text-sm md:text-base leading-relaxed mb-10 max-w-md" style={{ color: "#6B7280" }}>
+                  Contract farming for FMCG, HoReCa, and exporters who can&apos;t afford a failed audit.
+                </p>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row gap-4 mb-10">
+                  <button
+                    onClick={() => scrollToSection("contact")}
+                    className="inline-flex items-center justify-center gap-2 bg-[#1B6B3A] hover:bg-[#155530] text-white px-8 py-4 rounded-xl text-base font-bold transition-all shadow-xl shadow-[#1B6B3A]/25 hover:-translate-y-0.5"
+                  >
+                    Get a Custom Quote
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => scrollToSection("how-it-works")}
+                    className="inline-flex items-center justify-center gap-2 bg-white border-2 border-[#1B6B3A]/20 text-[#1B6B3A] hover:border-[#1B6B3A] hover:bg-[#F0FDF4] px-8 py-4 rounded-xl text-base font-semibold transition-all hover:-translate-y-0.5"
+                  >
+                    See How It Works
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+              </FadeInSection>
+            </div>
+
+
+          </div>
+        </div>
+
+
+      </section>
+      {/* ===================================================================== */}
+      {/* CREDIBILITY STRIP */}
+      {/* ===================================================================== */}
+      <div className="border-y border-[#E5E7EB] py-5 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
+            <p className="text-xs font-medium tracking-widest text-[#9CA3AF] uppercase whitespace-nowrap">
+              Backed by
+            </p>
+            <div className="flex items-center gap-8 flex-wrap justify-center">
+              {/* AgHub logo */}
+              <img
+                src="/AgHub-Logo-1030x489.png"
+                alt="AgHub PJTSAU"
+                className="h-8 object-contain opacity-70 hover:opacity-100 transition-opacity"
+              />
+              {/* APEDA logo */}
+              <img
+                src="/apeda-logo.png"
+                alt="APEDA"
+                className="h-8 object-contain opacity-70 hover:opacity-100 transition-opacity"
+              />
+              {/* Text badge */}
+              <span className="text-xs font-semibold text-[#6B7280] border border-[#E5E7EB] px-3 py-1.5 rounded-full">
+                AgHub Incubatee
               </span>
             </div>
-
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#111827] leading-[1.15] mb-6">
-              Your brand deserves a supply chain it can{""}
-              <span className="text-[#1B6B3A]">prove.</span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-lg md:text-xl text-[#4B5563] leading-relaxed mb-8 max-w-2xl">
-              We grow it. We document it. We deliver it. Contract farming for FMCG, HoReCa, and
-              exporters who are done guessing.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="inline-flex items-center justify-center gap-2 bg-[#1B6B3A] hover:bg-[#155530] text-white px-7 py-3 rounded-md text-base font-medium transition-colors"
-              >
-                Get a Custom Quote
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => scrollToSection("how-it-works")}
-                className="inline-flex items-center justify-center gap-2 bg-white border-2 border-[#1B6B3A] text-[#1B6B3A] hover:bg-green-50 px-7 py-3 rounded-md text-base font-medium transition-colors"
-              >
-                See How It Works
-              </button>
-            </div>
-          </FadeInSection>
+          </div>
         </div>
-      </section>
+      </div>
 
       {/* ===================================================================== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div style={{ height: "1px", background: "rgba(27,107,58,0.08)" }} /></div>
+
       {/* SECTION 3: PROBLEM SECTION */}
       {/* ===================================================================== */}
       <section className="py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeInSection className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4">
-              Is your supplier giving you this?
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+              Is your supplier giving <span className="text-[#1B6B3A]">you this?</span>
             </h2>
             <p className="text-lg text-[#6B7280] max-w-2xl mx-auto">
               Most mandi-sourced supply chains cannot answer these questions. Yours should.
             </p>
           </FadeInSection>
 
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            {[
-              {
-                icon: FileQuestion,
-                title:"Undocumented Source",
-                problem:"No paper trail. No field IDs. No way to trace where your produce actually came from.",
-                solution:"Full traceability from seed to shelf — every batch documented.",
-              },
-              {
-                icon: AlertTriangle,
-                title:"Inconsistent Grading",
-                problem:"Every mandi lot is a gamble. Grades shift batch to batch. Your QA team is exhausted.",
-                solution:"NABL-tested, grade-sorted produce to your exact specification.",
-              },
-              {
-                icon: ShieldOff,
-                title:"No Audit Paper Trail",
-                problem:"FSSAI asks for traceability records. Export partner asks for compliance docs. You have nothing.",
-                solution:"Complete documentation pack with every delivery. Audit-ready, always.",
-              },
-            ].map((card, index) => (
-              <FadeInSection key={index}>
-                <div className="bg-white border border-[#E5E7EB] rounded-lg p-6 h-full hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-                  {/* Icon Badge */}
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-[#FEF3C7] mb-5">
-                    <card.icon className="w-6 h-6 text-[#B45309]" />
+          <FadeInSection>
+            <div className="rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-sm">
+              {/* Column headers */}
+              <div className="grid grid-cols-2">
+                <div className="flex items-center gap-3 px-6 py-4 bg-[#FEF9F0] border-b border-[#E5E7EB] border-r border-[#E5E7EB]">
+                  <div className="w-8 h-8 rounded-lg bg-[#FEF3C7] flex items-center justify-center flex-shrink-0">
+                    <Store className="w-4 h-4 text-[#B45309]" />
                   </div>
-
-                  <h3 className="text-xl font-bold text-[#111827] mb-3">{card.title}</h3>
-                  <p className="text-[#6B7280] leading-relaxed mb-5">{card.problem}</p>
-
-                  {/* Divider */}
-                  <div className="border-t border-[#E5E7EB] my-5" />
-
-                  {/* Solution */}
-                  <div className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0 mt-0.5" />
-                    <p className="text-[#1B6B3A] font-medium leading-relaxed">{card.solution}</p>
+                  <div>
+                    <p className="font-bold text-[#111827] text-sm">Traditional Supplier</p>
+                    <p className="text-[10px] text-[#9CA3AF]">Uncertain. Unverified. Unreliable.</p>
                   </div>
                 </div>
-              </FadeInSection>
-            ))}
-          </div>
+                <div className="flex items-center gap-3 px-6 py-4 bg-[#F0FDF4] border-b border-[#E5E7EB]">
+                  <div className="w-8 h-8 rounded-lg bg-[#1B6B3A]/10 flex items-center justify-center flex-shrink-0">
+                    <Leaf className="w-4 h-4 text-[#1B6B3A]" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#1B6B3A] text-sm">Ayra Farm Labs</p>
+                    <p className="text-[10px] text-[#1B6B3A]/60">Traceable. Verified. Reliable.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rows */}
+              {[
+                {
+                  bad: { icon: FileQuestion, title: "Undocumented Source", desc: "No paper trail. No field IDs. No way to trace where your produce actually came from." },
+                  good: { desc: "Full traceability from seed to shelf — every batch documented." },
+                },
+                {
+                  bad: { icon: AlertTriangle, title: "Inconsistent Grading", desc: "Every mandi lot is a gamble. Grades shift batch to batch. Your QA team is exhausted." },
+                  good: { desc: "Grade-sorted produce to your exact specification." },
+                },
+                {
+                  bad: { icon: ShieldOff, title: "No Audit Paper Trail", desc: "Auditors ask for traceability records and compliance docs. You have nothing." },
+                  good: { desc: "Complete documentation pack with every delivery. Audit-ready, always." },
+                },
+              ].map((row, i) => (
+                <div key={i} className="grid grid-cols-2" style={{ borderBottom: i < 2 ? "1px solid #F3F4F6" : "none" }}>
+                  {/* Bad side */}
+                  <div className="flex items-start gap-4 px-6 py-5 bg-white border-r border-[#F3F4F6] hover:bg-[#FEF9F0] transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#FEF3C7] flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <row.bad.icon className="w-4 h-4 text-[#B45309]" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#111827] text-sm mb-1">{row.bad.title}</p>
+                      <p className="text-sm text-[#6B7280] leading-relaxed">{row.bad.desc}</p>
+                    </div>
+                  </div>
+                  {/* Good side */}
+                  <div className="flex items-start gap-4 px-6 py-5 bg-white hover:bg-[#F0FDF4] transition-colors">
+                    <div className="w-9 h-9 rounded-full bg-[#DCFCE7] border border-[#BBF7D0] flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle className="w-4 h-4 text-[#1B6B3A]" />
+                    </div>
+                    <p className="text-sm font-medium text-[#1B6B3A] leading-relaxed mt-1">{row.good.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </FadeInSection>
         </div>
       </section>
 
       {/* ===================================================================== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div style={{ height: "1px", background: "rgba(27,107,58,0.08)" }} /></div>
+
       {/* SECTION 4: HOW IT WORKS */}
       {/* ===================================================================== */}
       <section id="how-it-works" className="py-12 md:py-16">
@@ -393,8 +621,8 @@ export default function LandingPage() {
             <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-3">
               The Process
             </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4">
-              From your requirement to your warehouse.
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+              From your requirement to your <span className="text-[#1B6B3A]">warehouse.</span>
             </h2>
           </FadeInSection>
 
@@ -434,7 +662,7 @@ export default function LandingPage() {
                     icon: FlaskConical,
                     step:"4",
                     title:"We harvest",
-                    description:"NABL lab testing, grade sorting.",
+                    description:"Scientific grade sorting and quality testing.",
                     badge:"48 hours",
                     badgeLabel:"quality approval",
                   },
@@ -496,6 +724,8 @@ export default function LandingPage() {
       </section>
 
       {/* ===================================================================== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div style={{ height: "1px", background: "rgba(27,107,58,0.08)" }} /></div>
+
       {/* SECTION 5: SERVICES OVERVIEW */}
       {/* ===================================================================== */}
       <section id="services" className="py-12 md:py-16">
@@ -504,78 +734,38 @@ export default function LandingPage() {
             <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-3">
               Our Services
             </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4">
-              One partner. Every agri supply need.
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+              One partner. Every agri <span className="text-[#1B6B3A]">supply need.</span>
             </h2>
           </FadeInSection>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {/* PRIMARY — 2 core services */}
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-8">
             {[
               {
                 icon: Sprout,
-                tag:"Grow to Order",
-                title:"Contract Farming",
-                description:"Full crop cycle management from requirement to harvest, with weekly photo updates and complete documentation.",
-                bullets: ["Requirement-matched crop growing","Weekly geo-tagged photo updates","NABL-accredited lab testing","Full documentation pack included",
-                ],
+                tag: "Grow to Order",
+                title: "Contract Farming",
+                description: "Full crop cycle management from requirement to harvest, with weekly photo updates and complete documentation.",
+                bullets: ["Requirement-matched crop growing", "Weekly geo-tagged photo updates", "Accredited lab testing", "Full documentation pack included"],
               },
               {
                 icon: FileText,
-                tag:"Every gram accountable",
-                title:"Documented Produce Supply",
-                description:"Recurring supply with batch-level traceability. QR codes on every package linking to full field history.",
-                bullets: ["Batch-level QR traceability","Grade-sorted produce","FSSAI-compliant labelling","Recurring supply contracts",
-                ],
-              },
-              {
-                icon: Award,
-                tag:"Know your source",
-                title:"Supply Chain Audit",
-                description:"Field-level audit of your existing suppliers with a transition roadmap to documented sourcing.",
-                bullets: ["Existing supplier assessment","Field-level audit reports","Gap analysis documentation","Transition roadmap",
-                ],
-              },
-              {
-                icon: Leaf,
-                tag:"Right produce, right season",
-                title:"Seasonal Subscription",
-                description:"Lock in volumes and prices for seasonal produce. Predictable supply, predictable costs.",
-                bullets: ["Locked volumes & prices","Seasonal calendar planning","Priority allocation","Flexible delivery scheduling",
-                ],
-              },
-              {
-                icon: Globe,
-                tag:"Farm to freight",
-                title:"Export-Ready Produce",
-                description:"Phytosanitary and compliance documentation for EU, Gulf, and international markets.",
-                bullets: ["EU MRL compliance","Gulf country standards","APEDA coordination","Full export doc set",
-                ],
-              },
-              {
-                icon: MapPinned,
-                tag:"Earn from your land",
-                title:"Landowner Partnership",
-                description:"Lease your agricultural land for tax-free income. We manage everything, you earn.",
-                bullets: ["Rs. 20-40k per acre/year","Tax-free under Section 10(1)","Zero management effort","Soil health maintained",
-                ],
+                tag: "Every gram accountable",
+                title: "Documented Produce Supply",
+                description: "Recurring supply with batch-level traceability. QR codes on every package linking to full field history.",
+                bullets: ["Batch-level QR traceability", "Grade-sorted produce", "Compliant labelling", "Recurring supply contracts"],
               },
             ].map((service, index) => (
               <FadeInSection key={index}>
-                <div className="bg-white border border-[#E5E7EB] rounded-lg overflow-hidden h-full hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col">
-                  {/* Image Placeholder */}
-                  <div className="h-40 bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] flex items-center justify-center">
-                    <service.icon className="w-16 h-16 text-[#1B6B3A]/30" />
+                <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden h-full hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col">
+                  <div className="h-36 bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] flex items-center justify-center">
+                    <service.icon className="w-14 h-14 text-[#1B6B3A]/30" />
                   </div>
-                  
                   <div className="p-6 flex flex-col flex-1">
-                    {/* Tag */}
-                    <span className="inline-block px-3 py-1 rounded-full bg-[#1B6B3A]/[0.08] text-xs font-medium text-[#1B6B3A] mb-3 self-start">
-                      {service.tag}
-                    </span>
-
+                    <span className="inline-block px-3 py-1 rounded-full bg-[#1B6B3A]/[0.08] text-xs font-medium text-[#1B6B3A] mb-3 self-start">{service.tag}</span>
                     <h3 className="text-xl font-bold text-[#111827] mb-2">{service.title}</h3>
                     <p className="text-sm text-[#6B7280] mb-4 leading-relaxed">{service.description}</p>
-
                     <ul className="space-y-2 mb-5 flex-1">
                       {service.bullets.map((bullet, i) => (
                         <li key={i} className="flex items-start gap-2">
@@ -584,18 +774,35 @@ export default function LandingPage() {
                         </li>
                       ))}
                     </ul>
-
-                    <button
-                      onClick={() => scrollToSection("contact")}
-                      className="text-[#1B6B3A] font-medium text-sm hover:text-[#2E8B57] transition-colors self-start"
-                    >
-                      Learn more →
+                    <button onClick={() => scrollToSection("contact")} className="text-[#1B6B3A] font-medium text-sm hover:text-[#2E8B57] transition-colors self-start">
+                      Discuss this →
                     </button>
                   </div>
                 </div>
               </FadeInSection>
             ))}
           </div>
+
+          {/* SECONDARY — also available */}
+          <FadeInSection>
+            <p className="text-xs font-medium tracking-widest text-[#9CA3AF] uppercase mb-4">Also available</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { icon: Award,     title: "Supply Chain Audit",    desc: "Field-level audit + transition roadmap" },
+                { icon: Leaf,      title: "Seasonal Subscription", desc: "Locked volumes & predictable supply" },
+                { icon: Globe,     title: "Export-Ready Produce",  desc: "APEDA · EU · Gulf compliance docs" },
+                { icon: MapPinned, title: "Audit & Advisory",      desc: "Documentation gap analysis" },
+              ].map((s, i) => (
+                <div key={i} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:border-[#1B6B3A]/40 hover:shadow-md hover:-translate-y-1 hover:bg-[#F0FDF4] transition-all duration-200 cursor-pointer">
+                  <div className="w-9 h-9 rounded-lg bg-[#F0FDF4] flex items-center justify-center mb-3">
+                    <s.icon className="w-4 h-4 text-[#1B6B3A]" />
+                  </div>
+                  <p className="font-bold text-[#111827] text-sm mb-1">{s.title}</p>
+                  <p className="text-xs text-[#6B7280]">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </FadeInSection>
 
           {/* Quote Banner */}
           <FadeInSection className="mt-12 md:mt-16">
@@ -616,77 +823,8 @@ export default function LandingPage() {
       </section>
 
       {/* ===================================================================== */}
-      {/* SECTION 5: TRUST / SOCIAL PROOF */}
-      {/* ===================================================================== */}
-      <section className="py-12 md:py-16 bg-[#1B6B3A]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeInSection className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Trusted by brands that demand proof.
-            </h2>
-          </FadeInSection>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div style={{ height: "1px", background: "rgba(27,107,58,0.08)" }} /></div>
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6 mb-16">
-            {[
-              { value: 500, suffix:"+", label:"Acres Under Management" },
-              { value: 100, suffix:"%", label:"Documented Batches" },
-              { value: 4, suffix:"h", label:"Average Response Time" },
-              { value: 50, suffix:"+", label:"Crop Cycles Completed" },
-            ].map((stat, index) => (
-              <FadeInSection key={index} className="text-center">
-                <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                <p className="mt-2 text-sm text-white/70">{stat.label}</p>
-              </FadeInSection>
-            ))}
-          </div>
-
-          {/* Certification Badges */}
-          <FadeInSection className="mb-12">
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
-              {[
-                { name:"FSSAI", description:"Food Safety Certified" },
-                { name:"NABL", description:"Lab Accredited" },
-                { name:"APEDA", description:"Export Registered" },
-              ].map((cert, index) => (
-                <div
-                  key={index}
-                  className="px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-center"
-                >
-                  <p className="text-lg font-bold text-white">{cert.name}</p>
-                  <p className="text-xs text-white/60">{cert.description}</p>
-                </div>
-              ))}
-            </div>
-          </FadeInSection>
-
-          {/* Testimonial Quote Card */}
-          <FadeInSection>
-            <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-8 md:p-10 relative">
-              {/* Large Quote Mark */}
-              <div className="absolute -top-4 left-8 text-6xl text-white/30 font-serif">&ldquo;</div>
-              
-              <blockquote className="text-lg md:text-xl text-white leading-relaxed mb-6 pt-4">
-                Finally, a supplier who understands what audit-ready documentation means. 
-                We walked into our last compliance review with complete confidence — every batch traceable, 
-                every input logged, every test certified. This is what modern procurement should look like.
-              </blockquote>
-              
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">RK</span>
-                </div>
-                <div>
-                  <p className="font-bold text-white">Ravi Kumar</p>
-                  <p className="text-sm text-white/70">Procurement Head, Leading FMCG Brand</p>
-                </div>
-              </div>
-            </div>
-          </FadeInSection>
-        </div>
-      </section>
-
-      {/* ===================================================================== */}
       {/* SECTION 7: TRACEABILITY */}
       {/* ===================================================================== */}
       <section id="traceability" className="py-12 md:py-16">
@@ -695,8 +833,8 @@ export default function LandingPage() {
             <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-3">
               Traceability
             </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4">
-              Every batch. Every input. Every test. On record.
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+              Every batch. Every input. Every test. <span className="text-[#1B6B3A]">On record.</span>
             </h2>
           </FadeInSection>
 
@@ -714,13 +852,14 @@ export default function LandingPage() {
                     { icon: FileText, label:"Input Application Log" },
                     { icon: Droplets, label:"Irrigation Log" },
                     { icon: Award, label:"Harvest Certificate" },
-                    { icon: TestTube, label:"NABL Lab Test" },
+                    { icon: TestTube, label:"Lab Quality Test" },
                     { icon: FileCheck, label:"Grade Certificate" },
                     { icon: Truck, label:"Delivery Note" },
                   ].map((doc, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-3 p-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg"
+                      className="flex items-center gap-3 p-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg hover:border-[#1B6B3A]/30 hover:bg-[#F0FDF4] hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200 cursor-default"
+                      style={{ animationDelay: `${index * 60}ms` }}
                     >
                       <div className="w-10 h-10 rounded-md bg-[#1B6B3A]/[0.08] flex items-center justify-center flex-shrink-0">
                         <doc.icon className="w-5 h-5 text-[#1B6B3A]" />
@@ -734,298 +873,172 @@ export default function LandingPage() {
 
             {/* Right Column - QR Traceability Feature */}
             <FadeInSection>
-              <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 md:p-8 h-full">
-                <div className="flex flex-col md:flex-row gap-6">
+              <div className="bg-white border border-[#E5E7EB] rounded-xl p-8 md:p-10 h-full">
+                <div className="flex flex-col md:flex-row gap-8">
                   {/* QR Code */}
                   <div className="flex-shrink-0 mx-auto md:mx-0">
-                    <div className="w-32 h-32 border-2 border-dashed border-[#E5E7EB] rounded-lg flex items-center justify-center bg-[#F9FAFB]">
-                      <ScanLine className="w-12 h-12 text-[#1B6B3A]" />
+                    <div className="w-44 h-44 border-2 border-dashed border-[#E5E7EB] rounded-xl flex items-center justify-center bg-[#F9FAFB]">
+                      <ScanLine className="w-16 h-16 text-[#1B6B3A]" />
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#111827] mb-2">Scan to see the full journey</h3>
-                    <p className="text-[#6B7280] mb-4 text-sm">
+                    <h3 className="text-2xl font-bold text-[#111827] mb-3">Scan to see the full journey</h3>
+                    <p className="text-[#6B7280] mb-6">
                       Every package has a QR code linking to its complete field-to-delivery history.
                     </p>
 
-                    <ul className="space-y-2 mb-6">
-                      {["Instant traceability","6-page detailed report","Share with auditors","Build consumer trust",
-                      ].map((item, index) => (
-                        <li key={index} className="flex items-center gap-2 text-sm text-[#4B5563]">
-                          <CheckCircle className="w-4 h-4 text-[#1B6B3A] flex-shrink-0" />
-                          <span>{item}</span>
+                    <ul className="space-y-3">
+                      {["Instant traceability","6-page detailed report","Share with auditors","Build consumer trust"].map((item, index) => (
+                        <li key={index} className="flex items-center gap-3 text-[#4B5563] p-2 rounded-lg hover:bg-[#F0FDF4] transition-colors duration-150 cursor-default">
+                          <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0" />
+                          <span className="text-base">{item}</span>
                         </li>
                       ))}
                     </ul>
-
-                    <button
-                      onClick={() => scrollToSection("contact")}
-                      className="inline-flex items-center justify-center gap-2 bg-[#1B6B3A]/[0.08] hover:bg-[#1B6B3A]/[0.15] text-[#1B6B3A] px-5 py-2.5 rounded-md text-sm font-medium transition-colors"
-                    >
-                      Download sample report
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
                   </div>
                 </div>
               </div>
             </FadeInSection>
           </div>
 
-          {/* Regulatory Compliance Section */}
-          <FadeInSection>
-            <div className="mb-8">
-              <h3 className="text-lg font-bold text-[#111827] mb-2 text-center">Regulatory Compliance</h3>
-              <p className="text-[#6B7280] text-center text-sm">Our documentation meets these standards</p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                {
-                  icon: ShieldCheck,
-                  title:"FSSAI",
-                  description:"Full compliance with Indian food safety regulations",
-                },
-                {
-                  icon: Globe,
-                  title:"EU Deforestation Regulation",
-                  description:"Traceability data for EU export compliance",
-                },
-                {
-                  icon: Leaf,
-                  title:"ESG Disclosure",
-                  description:"Sustainability metrics for corporate reporting",
-                },
-                {
-                  icon: Store,
-                  title:"Retail Audit",
-                  description:"Documentation ready for major retail chains",
-                },
-              ].map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-white border border-[#E5E7EB] rounded-lg p-4 text-center group hover:border-[#1B6B3A]/30 hover:shadow-md transition-all duration-300"
-                >
-                  <div className="w-12 h-12 rounded-full bg-[#1B6B3A]/[0.08] flex items-center justify-center mx-auto mb-3 group-hover:bg-[#1B6B3A] group-hover:scale-110 transition-all duration-300">
-                    <item.icon className="w-6 h-6 text-[#1B6B3A] group-hover:text-white transition-colors duration-300" />
-                  </div>
-                  <h4 className="font-bold text-[#111827] text-sm mb-1">{item.title}</h4>
-                  <p className="text-xs text-[#6B7280]">{item.description}</p>
-                </div>
-              ))}
-            </div>
-          </FadeInSection>
         </div>
       </section>
 
       {/* ===================================================================== */}
-      {/* SECTION 6: FOR LANDOWNERS */}
-      {/* ===================================================================== */}
-      <section id="landowners" className="py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeInSection className="text-center mb-12 md:mb-16">
-            <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-3">
-              For Landowners
-            </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4">
-              Your land. Our expertise.
-            </h2>
-            <p className="text-lg text-[#6B7280] max-w-2xl mx-auto">
-              Agricultural income is tax-free under Section 10(1). Turn your idle land into documented, passive income.
-            </p>
-          </FadeInSection>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div style={{ height: "1px", background: "rgba(27,107,58,0.08)" }} /></div>
 
-          {/* Pricing Comparison Cards */}
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-12">
-            {/* Fallow Land - Gray/Dull */}
-            <FadeInSection>
-              <div className="bg-[#F3F4F6] border border-[#D1D5DB] rounded-lg p-6 h-full opacity-70">
-                <h3 className="text-lg font-bold text-[#6B7280] mb-2">Fallow Land</h3>
-                <div className="mb-4">
-                  <span className="font-mono text-3xl font-bold text-[#6B7280]">₹0</span>
-                  <span className="text-[#9CA3AF]">/year</span>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-[#9CA3AF]">
-                    <X className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                    <span>Land degradation over time</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#9CA3AF]">
-                    <X className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                    <span>No income generation</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#9CA3AF]">
-                    <X className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                    <span>Weed and pest buildup</span>
-                  </li>
-                </ul>
-              </div>
-            </FadeInSection>
-
-            {/* Informal Lease - Slightly Better */}
-            <FadeInSection>
-              <div className="bg-white border border-[#E5E7EB] rounded-lg p-6 h-full">
-                <h3 className="text-lg font-bold text-[#4B5563] mb-2">Informal Lease</h3>
-                <div className="mb-4">
-                  <span className="font-mono text-3xl font-bold text-[#4B5563]">₹6,000–10,000</span>
-                  <span className="text-[#6B7280]">/acre/year</span>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-[#6B7280]">
-                    <AlertTriangle className="w-5 h-5 text-[#B45309] flex-shrink-0 mt-0.5" />
-                    <span>No legal documentation</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#6B7280]">
-                    <AlertTriangle className="w-5 h-5 text-[#B45309] flex-shrink-0 mt-0.5" />
-                    <span>Payment disputes common</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#6B7280]">
-                    <AlertTriangle className="w-5 h-5 text-[#B45309] flex-shrink-0 mt-0.5" />
-                    <span>No soil health guarantee</span>
-                  </li>
-                </ul>
-              </div>
-            </FadeInSection>
-
-            {/* With AgriSupply Pro - Highlighted */}
-            <FadeInSection>
-              <div className="bg-white border-2 border-[#1B6B3A] rounded-lg p-6 h-full relative">
-                {/* Recommended Badge */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1 bg-[#1B6B3A] text-white text-xs font-bold rounded-full">
-                    RECOMMENDED
-                  </span>
-                </div>
-                
-                <h3 className="text-lg font-bold text-[#1B6B3A] mb-2 mt-2">With FarmBrand</h3>
-                <div className="mb-4">
-                  <span className="font-mono text-3xl font-bold text-[#1B6B3A]">₹20,000–40,000</span>
-                  <span className="text-[#6B7280]">/acre/year</span>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-[#4B5563]">
-                    <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0 mt-0.5" />
-                    <span>Tax-free income (Section 10(1))</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#4B5563]">
-                    <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0 mt-0.5" />
-                    <span>Fully documented agreement</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#4B5563]">
-                    <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0 mt-0.5" />
-                    <span>Soil health maintained</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-[#4B5563]">
-                    <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0 mt-0.5" />
-                    <span>Easy exit anytime</span>
-                  </li>
-                </ul>
-              </div>
-            </FadeInSection>
-          </div>
-
-          {/* CTAs */}
-          <FadeInSection className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
-            <button
-              onClick={() => {
-                setBuyerType("Landowner")
-                scrollToSection("contact")
-              }}
-              className="inline-flex items-center justify-center gap-2 bg-[#1B6B3A] hover:bg-[#155530] text-white px-7 py-3 rounded-md text-base font-medium transition-colors"
-            >
-              Enroll your land
-              <ArrowRight className="w-5 h-5" />
-            </button>
-            <a
-              href="https://wa.me/919876543210"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-white border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366]/5 px-7 py-3 rounded-md text-base font-medium transition-colors"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Chat on WhatsApp
-            </a>
-          </FadeInSection>
-
-          {/* Farmland Image with Benefit Cards */}
-          <FadeInSection>
-            <div className="relative p-8 md:p-12">
-              <div className="relative grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { icon: Award, title:"Higher Income", description:"2-4x more than informal leases" },
-                  { icon: FileCheck, title:"Tax Free", description:"Section 10(1) compliant" },
-                  { icon: FileText, title:"Full Documentation", description:"Legal agreement included" },
-                  { icon: Sprout, title:"Soil Health", description:"Maintained & improved" },
-                ].map((benefit, index) => (
-                  <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
-                    <div className="w-10 h-10 rounded-lg bg-[#1B6B3A]/[0.08] flex items-center justify-center mb-3">
-                      <benefit.icon className="w-5 h-5 text-[#1B6B3A]" />
-                    </div>
-                    <h4 className="font-bold text-[#111827] mb-1">{benefit.title}</h4>
-                    <p className="text-sm text-[#6B7280]">{benefit.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeInSection>
-        </div>
-      </section>
-
-      {/* ===================================================================== */}
       {/* SECTION 10: ABOUT US */}
       {/* ===================================================================== */}
       <section id="about" className="py-12 md:py-16  overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Founder's Note */}
+          <FadeInSection className="mb-16 text-center">
+            <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-4">
+              Why Ayra Exists
+            </p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-10" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>India's farmland didn't fail. <span className="text-[#1B6B3A]">The system did.</span>
+            </h2>
+
+            <div className="flex flex-col lg:flex-row gap-12 mb-12 items-start">
+              {/* LEFT — Founder note */}
+              <div className="flex-1 space-y-4 text-[#4B5563] leading-relaxed text-base">
+                <p>
+                  India&apos;s agriculture didn&apos;t fail because the land was bad. It fragmented.
+                  Generation after generation, farmland passed down through families — divided, subdivided,
+                  until what was once a productive holding became too small to farm economically and too
+                  scattered to manage scientifically. Today, Telangana has millions of acres of farmland
+                  sitting underproductive — not abandoned, but adrift.
+                </p>
+                <p>
+                  At the same time, businesses that depend on agricultural raw materials are navigating one
+                  of the most frustrating procurement realities in India. The sector is unorganised. Supply is
+                  unreliable. Quality is inconsistent. And traceable, documented, transparent sourcing from
+                  farm to factory? Almost impossible to find at scale.
+                </p>
+                <p>
+                  And at the centre of all of it — the farmer. Working harder every season with less return.
+                  Without access to modern agronomic practices, quality inputs, or organised market linkages,
+                  the person doing the most essential work in the chain is also the one absorbing the most
+                  risk and capturing the least value.
+                </p>
+                <p>
+                  We built Ayra Farm Labs because we believe this is a solvable problem — not with technology
+                  alone, but with professional, science-backed farm management that works for everyone in the chain.
+                </p>
+                <p>
+                  We are three people from very different worlds — business, technology, and agronomy. We came
+                  together because solving this required all three. And because someone had to start.
+                </p>
+                <div className="pt-6 border-t border-[#E5E7EB]">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-sm flex-shrink-0"
+                      style={{
+                        background: "linear-gradient(135deg, #1B6B3A 0%, #2E8B57 100%)",
+                        boxShadow: "0 4px 16px rgba(27,107,58,0.3)",
+                      }}
+                    >
+                      YG
+                    </div>
+                    <div>
+                      <p
+                        className="font-bold text-[#111827] mb-0.5"
+                        style={{ fontFamily: "var(--font-playfair, serif)", fontSize: "1.1rem" }}
+                      >
+                        Yashwanth Gorenka
+                      </p>
+                      <p className="text-xs tracking-wider uppercase" style={{ color: "#1B6B3A", letterSpacing: "0.12em" }}>
+                        Founder · Ayra Farm Labs
+                      </p>
+                    </div>
+                  </div>
+                  {/* Decorative curve line */}
+                  <svg className="mt-4 w-32 h-6" viewBox="0 0 128 24" fill="none">
+                    <path d="M4 20 Q32 4 64 12 Q96 20 124 6" stroke="#1B6B3A" strokeWidth="1.5" strokeOpacity="0.3" strokeLinecap="round" fill="none"/>
+                    <circle cx="4" cy="20" r="2.5" fill="#1B6B3A" fillOpacity="0.4"/>
+                    <circle cx="124" cy="6" r="2.5" fill="#1B6B3A" fillOpacity="0.4"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* RIGHT — Stacked flash cards */}
+              <ForWhomCards />
+            </div>
+          </FadeInSection>
+
+          <div className="border-t border-[#E5E7EB] mb-16" />
+
           {/* Founders Section */}
           <FadeInSection className="text-center mb-16">
             <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-3">
               About Us
             </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-8">
-              Meet the Founders
+            <div id="team" style={{ scrollMarginTop: "80px" }} />
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-8" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+              Meet the <span className="text-[#1B6B3A]">Founders</span>
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
-                  initial:"S",
-                  imageUrl:"https://i.pravatar.cc/150?img=11",
-                  name:"Sai Kumar",
-                  title:"Co-Founder & CEO",
-                  bio:"An Ag-tech visionary with over 10 years of experience in supply chain optimization and digital commerce.",
+                  initials: "YG",
+                  name: "Yashwanth Gorenka",
+                  title: "Founder",
+                  bio: "Yashwanth brings a rare combination of startup experience and growth marketing depth — having worked across 5+ startups and 15+ freelance clients. He leads Ayra's overall business strategy, brand, sales, and growth.",
+                  tags: ["Growth Strategy", "Brand", "Sales"],
                 },
                 {
-                  initial:"P",
-                  imageUrl:"https://i.pravatar.cc/150?img=5",
-                  name:"Priya Reddy",
-                  title:"Co-Founder & COO",
-                  bio:"Expert in operational excellence and farmer community building, focused on scaling sustainable procurement models.",
+                  initials: "K",
+                  name: "Karthik",
+                  title: "Co-Founder & Head of Operations",
+                  bio: "A cybersecurity graduate turned agri-operations builder, Karthik owns everything that keeps Ayra running — logistics, systems, and operational infrastructure.",
+                  tags: ["Logistics", "Systems", "Execution"],
                 },
                 {
-                  initial:"A",
-                  imageUrl:"https://i.pravatar.cc/150?img=12",
-                  name:"Arjun Patel",
-                  title:"Co-Founder & CTO",
-                  bio:"Technology strategist dedicated to building immutable traceability systems and AI-driven crop monitoring.",
+                  initials: "ST",
+                  name: "Shiva Teja",
+                  title: "Co-Founder & Chief Agri Ops",
+                  bio: "Shiva Teja holds an Honours degree in Agricultural Science and leads all on-ground farm operations at Ayra. The agronomic rigour behind every managed farm.",
+                  tags: ["Soil Health", "Harvest", "Agronomy"],
                 },
               ].map((founder, index) => (
-                <div key={index} className="group bg-white border border-[#E5E7EB] rounded-2xl p-8 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center">
-                  {founder.imageUrl ? (
-                    <img 
-                      src={founder.imageUrl} 
-                      alt={founder.name} 
-                      className="w-24 h-24 rounded-full object-cover mb-6 border-4 border-[#1B6B3A]/10 group-hover:border-[#1B6B3A]/30 group-hover:scale-110 transition-all duration-300 shadow-lg"
-                    />
-                  ) : (
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#1B6B3A] to-[#2E8B57] flex items-center justify-center text-white text-3xl font-bold mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                      {founder.initial}
+                <div key={index} className="group bg-white border border-[#E5E7EB] rounded-2xl p-8 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col">
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1B6B3A] to-[#2E8B57] flex items-center justify-center text-white text-lg font-black flex-shrink-0 shadow-lg">
+                      {founder.initials}
                     </div>
-                  )}
-                  <h4 className="text-xl font-bold text-[#111827] mb-1">{founder.name}</h4>
-                  <p className="text-sm font-medium text-[#1B6B3A] mb-4 uppercase tracking-wider">{founder.title}</p>
-                  <p className="text-[#6B7280] leading-relaxed text-sm">
-                    {founder.bio}
-                  </p>
+                    <div>
+                      <h4 className="text-base font-bold text-[#111827]">{founder.name}</h4>
+                      <p className="text-xs font-medium text-[#1B6B3A] uppercase tracking-wider">{founder.title}</p>
+                    </div>
+                  </div>
+                  <p className="text-[#6B7280] leading-relaxed text-sm flex-1 mb-4">{founder.bio}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {founder.tags.map((tag, j) => (
+                      <span key={j} className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide bg-[#F0FDF4] border border-[#BBF7D0] text-[#1B6B3A]">{tag}</span>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -1035,6 +1048,8 @@ export default function LandingPage() {
       </section>
 
       {/* ===================================================================== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div style={{ height: "1px", background: "rgba(27,107,58,0.08)" }} /></div>
+
       {/* SECTION 11: CONTACT / GET A QUOTE */}
       {/* ===================================================================== */}
       <section id="contact" className="py-12 md:py-16">
@@ -1043,8 +1058,8 @@ export default function LandingPage() {
             <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-3">
               Contact Us
             </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4">
-              Ready to replace your mandi supplier?
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-4" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+              Ready to replace your <span className="text-[#1B6B3A]">mandi supplier?</span>
             </h2>
             <p className="text-lg text-[#4B5563] max-w-2xl mx-auto leading-relaxed">
               Tell us what you need. We will tell you if we can do it — in 24 hours. No automated replies. No commitment.
@@ -1059,27 +1074,27 @@ export default function LandingPage() {
                 
                 {/* Contact Details */}
                 <div className="space-y-6 mb-10">
-                  <div className="flex items-start gap-4 group">
+                  <div className="flex items-start gap-4 group hover:bg-[#F0FDF4] rounded-xl p-3 -mx-3 transition-all duration-200 cursor-default">
                     <div className="w-10 h-10 rounded-lg bg-[#1B6B3A]/10 flex items-center justify-center shrink-0 group-hover:bg-[#1B6B3A]/20 transition-colors">
                       <Phone className="w-5 h-5 text-[#1B6B3A]" />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-1">Phone</p>
-                      <span className="text-[#111827] font-medium">+91 98765 43210</span>
+                      <span className="text-[#111827] font-medium">+91 98488 90429</span>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 group">
+                  <div className="flex items-start gap-4 group hover:bg-[#F0FDF4] rounded-xl p-3 -mx-3 transition-all duration-200 cursor-default">
                     <div className="w-10 h-10 rounded-lg bg-[#1B6B3A]/10 flex items-center justify-center shrink-0 group-hover:bg-[#1B6B3A]/20 transition-colors">
                       <Mail className="w-5 h-5 text-[#1B6B3A]" />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-1">Email</p>
-                      <span className="text-[#111827] font-medium">hello@farmbrand.in</span>
+                      <span className="text-[#111827] font-medium">ayra.kshetrapalaka@gmail.com</span>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 group">
+                  <div className="flex items-start gap-4 group hover:bg-[#F0FDF4] rounded-xl p-3 -mx-3 transition-all duration-200 cursor-default">
                     <div className="w-10 h-10 rounded-lg bg-[#1B6B3A]/10 flex items-center justify-center shrink-0 group-hover:bg-[#1B6B3A]/20 transition-colors">
                       <MapPin className="w-5 h-5 text-[#1B6B3A]" />
                     </div>
@@ -1090,15 +1105,26 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <a
-                  href="https://wa.me/919876543210"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 bg-[#1B6B3A] text-white hover:bg-[#155530] px-8 py-4 rounded-lg text-base font-bold transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#1B6B3A]/20"
-                >
-                  <MessageCircle className="w-6 h-6" />
-                  Chat on WhatsApp
-                </a>
+                <div className="space-y-3">
+                  <a
+                    href="https://wa.me/919666004446"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 bg-[#1B6B3A] text-white hover:bg-[#155530] px-8 py-4 rounded-lg text-base font-bold transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#1B6B3A]/20"
+                  >
+                    <MessageCircle className="w-6 h-6" />
+                    Chat on WhatsApp
+                  </a>
+                  <a
+                    href="https://calendly.com/ayra-kshetrapalaka/30min"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 border-2 border-[#1B6B3A] text-[#1B6B3A] hover:bg-[#1B6B3A]/5 px-8 py-4 rounded-lg text-base font-bold transition-all"
+                  >
+                    <Phone className="w-5 h-5" />
+                    Book a 15-min Discovery Call
+                  </a>
+                </div>
               </div>
             </FadeInSection>
 
@@ -1340,7 +1366,7 @@ export default function LandingPage() {
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
                 <Leaf className="w-6 h-6 text-white" />
-                <span className="text-lg font-bold text-white">FarmBrand</span>
+                <span className="text-lg font-bold text-white">Ayra Farm Labs</span>
               </div>
               <p className="text-sm text-[#9CA3AF] leading-relaxed">
                 Making India&apos;s agricultural supply chain transparent, accountable, and efficient.
@@ -1351,11 +1377,11 @@ export default function LandingPage() {
             <div>
               <h4 className="text-white font-bold mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                {["How It Works","Services","Traceability","For Landowners","About Us","Contact"].map((link) => (
+                {["How It Works","Services","Traceability","Why Ayra","About Us","Contact"].map((link) => (
                   <li key={link}>
                     <button
                       onClick={() =>
-                        scrollToSection(link.toLowerCase().replace(/ /g,"-"))
+                        scrollToSection(link === "About Us" ? "team" : link.toLowerCase().replace(/ /g,"-"))
                       }
                       className="text-sm text-[#9CA3AF] hover:text-white transition-colors"
                     >
@@ -1388,8 +1414,8 @@ export default function LandingPage() {
             <div>
               <h4 className="text-white font-bold mb-4">Contact</h4>
               <ul className="space-y-2 text-sm text-[#9CA3AF]">
-                <li>+91 98765 43210</li>
-                <li>hello@farmbrand.in</li>
+                <li>+91 98488 90429</li>
+                <li>ayra.kshetrapalaka@gmail.com</li>
                 <li>AgHub, Hyderabad, Telangana</li>
               </ul>
             </div>
@@ -1397,7 +1423,7 @@ export default function LandingPage() {
 
           {/* Certification Badges */}
           <div className="flex flex-wrap justify-center gap-4 py-6">
-            {["AgHub","FSSAI","NABL","APEDA"].map((badge) => (
+            {["AgHub","APEDA"].map((badge) => (
               <span
                 key={badge}
                 className="px-4 py-2 bg-[#1F2937] rounded text-xs text-[#6B7280]"
@@ -1412,7 +1438,7 @@ export default function LandingPage() {
 
           {/* Bottom Bar */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#9CA3AF]">
-            <p>© 2026 FarmBrand. All rights reserved.</p>
+            <p>© 2026 Ayra Farm Labs. All rights reserved.</p>
             <div className="flex gap-6">
               <button className="hover:text-white transition-colors">Privacy Policy</button>
               <button className="hover:text-white transition-colors">Terms of Service</button>
