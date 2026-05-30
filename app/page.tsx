@@ -668,7 +668,7 @@ export default function LandingPage() {
               {/* Vertical Connector Line */}
               <div className="absolute left-6 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#E5E7EB] via-[#1B6B3A]/30 to-[#E5E7EB]" />
 
-              <div className="space-y-8 md:space-y-12">
+              <div className="space-y-0">
                 {[
                   {
                     icon: ClipboardList,
@@ -712,7 +712,7 @@ export default function LandingPage() {
                   },
                 ].map((step, index) => (
                   <FadeInSection key={index}>
-                    <div className={`relative flex gap-6 md:gap-0 group ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                    <div className={`relative flex gap-6 md:gap-0 group min-h-[120px] md:min-h-[148px] items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                       {/* Desktop Spacer left/right alternating */}
                       <div className="hidden md:block flex-1 min-w-0" />
 
@@ -727,7 +727,7 @@ export default function LandingPage() {
                       </div>
 
                       {/* Content */}
-                      <div className={`flex-1 min-w-0 flex flex-col justify-center pb-4 pt-2 md:pt-4 p-4 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 -mt-2 md:-mt-4 border border-transparent hover:border-[#1B6B3A]/10 text-left ${index % 2 === 0 ? 'md:items-start md:text-left' : 'md:items-end md:text-right'}`}>
+                      <div className={`flex-1 min-w-0 flex flex-col justify-center p-4 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-[#1B6B3A]/10 text-left ${index % 2 === 0 ? 'md:items-start md:text-left' : 'md:items-end md:text-right'}`}>
                         <div className={`flex flex-wrap items-center gap-3 mb-2 ${index % 2 === 0 ? 'md:justify-start' : 'md:justify-end'}`}>
                           <h3 className="text-lg md:text-xl font-bold text-[#111827] group-hover:text-[#1B6B3A] transition-colors duration-300">{step.title}</h3>
                           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1B6B3A]/[0.08] group-hover:bg-[#1B6B3A]/[0.15] transition-colors duration-300">
