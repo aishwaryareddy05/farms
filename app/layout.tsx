@@ -1,19 +1,19 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display, JetBrains_Mono, Poppins } from 'next/font/google'
+import { Inter, Playfair_Display, JetBrains_Mono, Poppins, Lobster, Pacifico, Cinzel, Righteous, Raleway } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: '--font-inter',
 });
 
-const playfair = Playfair_Display({ 
+const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: '--font-playfair',
 });
 
-const jetbrainsMono = JetBrains_Mono({ 
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: '--font-mono',
 });
@@ -22,6 +22,36 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
   variable: '--font-poppins',
+})
+
+const lobster = Lobster({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: '--font-lobster',
+})
+
+const pacifico = Pacifico({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: '--font-pacifico',
+})
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: '--font-cinzel',
+})
+
+const righteous = Righteous({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: '--font-righteous',
+})
+
+const raleway = Raleway({
+  subsets: ["latin"],
+  weight: ["900"],
+  variable: '--font-raleway',
 })
 
 export const metadata: Metadata = {
@@ -55,7 +85,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth overflow-x-hidden">
-      <body className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} ${poppins.variable} font-sans antialiased overflow-x-hidden`}>
+      <body className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} ${poppins.variable} ${lobster.variable} ${pacifico.variable} ${cinzel.variable} ${righteous.variable} ${raleway.variable} font-sans antialiased overflow-x-hidden`}>
         {children}
         <Analytics />
       </body>

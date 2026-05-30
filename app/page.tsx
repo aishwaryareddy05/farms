@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, type ReactNode } from"react"
+import { useState, useEffect, useRef, type ReactNode } from "react"
 import {
   Leaf,
   Menu,
@@ -31,131 +31,22 @@ import {
   Star,
   Store,
   FileQuestion,
-} from"lucide-react"
+} from "lucide-react"
 
 // =============================================================================
 // =============================================================================
 // FOR WHOM — stacked flash cards
 // =============================================================================
-function ForWhomCards() {
-  const cards = [
-    {
-      label: "For the landowner",
-      icon: MapPin,
-      text: "A trusted operating partner who manages your land transparently, improves its productivity, and keeps you informed every step of the way.",
-      cta: "Partner with us",
-    },
-    {
-      label: "For the business",
-      icon: PackageCheck,
-      text: "A single accountable source for traceable, documented, quality-assured agricultural supply. No middlemen opacity. No season-to-season uncertainty.",
-      cta: "Get a quote",
-    },
-    {
-      label: "For the farmer",
-      icon: Sprout,
-      text: "An organised, supported way to grow. With the right knowledge, the right inputs, and a system that finally works in their favour.",
-      cta: "Join the network",
-    },
-  ]
-
-  const [active, setActive] = useState(0)
-  const [leaving, setLeaving] = useState(false)
-
-  const next = () => {
-    if (leaving) return
-    setLeaving(true)
-    setTimeout(() => {
-      setActive(i => (i + 1) % cards.length)
-      setLeaving(false)
-    }, 350)
-  }
-
-  return (
-    <div className="flex-1 flex flex-col gap-6 w-full">
-      {/* Stack */}
-      <div className="relative w-full" style={{ height: 460 }}>
-        {cards.map((card, i) => {
-          const offset = (i - active + cards.length) % cards.length
-          // 0 = front, 1 = middle, 2 = back
-          const isFront  = offset === 0
-          const isMid    = offset === 1
-          const isBack   = offset === 2
-
-          if (!isFront && !isMid && !isBack) return null
-
-          return (
-            <div
-              key={i}
-              onClick={isFront ? next : undefined}
-              className="absolute inset-0 rounded-2xl border p-10 flex flex-col"
-              style={{
-                background: "#F0FDF4",
-                border: "1.5px solid #BBF7D0",
-                boxShadow: isFront
-                  ? "0 8px 32px rgba(27,107,58,0.14)"
-                  : "0 2px 8px rgba(27,107,58,0.06)",
-                transform: isFront
-                  ? leaving ? "translateY(-12px) scale(0.94) rotate(-2deg)" : "translateY(0) scale(1) rotate(0deg)"
-                  : isMid
-                  ? "translateY(18px) scale(0.95) rotate(1.5deg)"
-                  : "translateY(32px) scale(0.90) rotate(-1deg)",
-                zIndex: isFront ? 3 : isMid ? 2 : 1,
-                opacity: isFront ? (leaving ? 0 : 1) : isMid ? 0.85 : 0.6,
-                cursor: isFront ? "pointer" : "default",
-                transition: "transform 0.35s ease, opacity 0.35s ease",
-                pointerEvents: isFront ? "auto" : "none",
-              }}
-            >
-              {isFront && (
-                <>
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 flex-shrink-0"
-                    style={{ background: "rgba(27,107,58,0.08)" }}
-                  >
-                    <card.icon className="w-7 h-7" style={{ color: "#1B6B3A" }} />
-                  </div>
-                  <p className="text-xl font-bold text-[#111827] mb-4">{card.label}</p>
-                  <p className="text-[#4B5563] leading-relaxed flex-1">{card.text}</p>
-                  <div className="flex items-center justify-between mt-6">
-                    <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: "#1B6B3A" }}>
-                      {card.cta} <ArrowRight className="w-4 h-4" />
-                    </div>
-                    <span className="text-xs text-[#9CA3AF]">tap to cycle →</span>
-                  </div>
-                </>
-              )}
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Dots */}
-      <div className="flex justify-center gap-2">
-        {cards.map((_, i) => (
-          <div
-            key={i}
-            className="rounded-full transition-all duration-300"
-            style={{
-              width: active === i ? 20 : 8,
-              height: 8,
-              background: active === i ? "#1B6B3A" : "#BBF7D0",
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
-
 // =============================================================================
 function AnimatedFaaS() {
   const fonts = [
-    { family: "var(--font-inter, sans-serif)",    weight: "900", style: "normal",  label: "FaaS" },
-    { family: "var(--font-playfair, serif)",       weight: "700", style: "italic",  label: "FaaS" },
-    { family: "var(--font-mono, monospace)",       weight: "800", style: "normal",  label: "FaaS" },
-    { family: "Georgia, serif",                    weight: "700", style: "normal",  label: "FaaS" },
-    { family: "var(--font-inter, sans-serif)",     weight: "900", style: "italic",  label: "FaaS" },
+    { family: "var(--font-lobster, cursive)", weight: "400", style: "italic", label: "FaaS" },
+    { family: "var(--font-pacifico, cursive)", weight: "400", style: "normal", label: "FaaS" }, // bubbly retro script
+    { family: "var(--font-cinzel, serif)", weight: "700", style: "normal", label: "FaaS" }, // classical Roman caps
+    { family: "var(--font-righteous, sans-serif)", weight: "400", style: "italic", label: "FaaS" },
+    { family: "var(--font-raleway, sans-serif)", weight: "900", style: "normal", label: "FaaS" },
+    { family: "var(--font-playfair, serif)", weight: "700", style: "italic", label: "FaaS" }, // elegant italic serif
+    { family: "var(--font-mono, monospace)", weight: "800", style: "normal", label: "FaaS" }, // technical monospace
   ]
   const [idx, setIdx] = useState(0)
   const [visible, setVisible] = useState(true)
@@ -191,9 +82,167 @@ function AnimatedFaaS() {
 }
 
 // =============================================================================
+// FOUNDER LETTER — ENVELOPE ANIMATION
+// GPU-only: only transform + opacity are animated (no clip-path, no height)
+// The envelope body (z-index 2) sits above the letter (z-index 1) and naturally
+// masks it while the letter rises via translateY(100%) → translateY(0).
+// =============================================================================
+function FounderLetterEnvelope() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [stage, setStage] = useState(0)
+  // 0 idle → 1 envelope springs in → 2 flap opens → 3 letter rises → 4 text fades in
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setStage(1); obs.disconnect() } },
+      { threshold: 0.12 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const t: ReturnType<typeof setTimeout>[] = []
+    if (stage === 1) t.push(setTimeout(() => setStage(2), 400))
+    if (stage === 2) t.push(setTimeout(() => setStage(3), 350))
+    if (stage === 3) t.push(setTimeout(() => setStage(4), 500))
+    return () => t.forEach(clearTimeout)
+  }, [stage])
+
+  return (
+    <div ref={ref} style={{ width: "100%" }}>
+      {/*
+        Flex column: letter on top, envelope below.
+        Letter starts at translateY(100%) — pushed down by its own height,
+        which places it exactly at the envelope's top edge visually.
+        Envelope z-index 2 > letter z-index 1, so envelope masks the letter
+        as it rises through the opening. Pure GPU composite. No layout shift.
+      */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "stretch" }}>
+
+        {/* ── LETTER PAPER ── */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            willChange: "transform",
+            backgroundImage: [
+              "repeating-linear-gradient(to bottom, transparent 0px, transparent 30px, rgba(27,107,58,0.07) 30px, rgba(27,107,58,0.07) 31px)",
+              "linear-gradient(170deg, #F6FEFA 0%, #F0FDF4 50%, #EAFAF1 100%)",
+            ].join(", "),
+            padding: "48px clamp(20px, 6%, 80px) 44px",
+            borderRadius: "3px 3px 0 0",
+            boxShadow: "4px 0 12px rgba(27,107,58,0.07), -4px 0 12px rgba(27,107,58,0.07), 0 -6px 20px rgba(27,107,58,0.08)",
+            border: "1px solid #BBF7D0",
+            borderBottom: "none",
+            transform: stage >= 3 ? "translateY(0)" : "translateY(100%)",
+            transition: "transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          {/* Green margin rule */}
+          <div style={{ position: "absolute", left: "clamp(16px, 4.5%, 68px)", top: 0, bottom: 0, width: 1, background: "rgba(27,107,58,0.22)" }} />
+
+          {/* Content — fades in after letter is fully risen */}
+          <div style={{ opacity: stage >= 4 ? 1 : 0, transition: "opacity 1s ease 0.15s" }}>
+            <div className="space-y-4" style={{
+              fontFamily: "var(--font-playfair, serif)",
+              color: "#374151", lineHeight: 1.9, fontSize: "0.975rem", fontStyle: "italic", textAlign: "center",
+            }}>
+              <p>India&apos;s agriculture didn&apos;t fail because the land was bad. It fragmented. Generation after generation, farmland passed down through families — divided, subdivided, until what was once a productive holding became too small to farm economically and too scattered to manage scientifically. Today, Telangana has millions of acres of farmland sitting underproductive — not abandoned, but adrift.</p>
+              <p>At the same time, businesses that depend on agricultural raw materials are navigating one of the most frustrating procurement realities in India. The sector is unorganised. Supply is unreliable. Quality is inconsistent. And traceable, documented, transparent sourcing from farm to factory? Almost impossible to find at scale.</p>
+              <p>And at the centre of all of it — the farmer. Working harder every season with less return. Without access to modern agronomic practices, quality inputs, or organised market linkages, the person doing the most essential work in the chain is also the one absorbing the most risk and capturing the least value.</p>
+              <p>We built Ayra Farm Labs because we believe this is a solvable problem — not with technology alone, but with professional, science-backed farm management that works for everyone in the chain.</p>
+              <p>We are three people from very different worlds — business, technology, and agronomy. We came together because solving this required all three. And because someone had to start.</p>
+            </div>
+
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(27,107,58,0.15)", textAlign: "right" }}>
+              <p style={{
+                fontFamily: "var(--font-playfair, serif)",
+                fontStyle: "italic", fontWeight: 700,
+                fontSize: "1.5rem", color: "#1B6B3A", marginBottom: 4,
+              }}>Yashwanth Gorenka</p>
+              <p style={{
+                fontFamily: "var(--font-playfair, serif)",
+                fontSize: "0.72rem", letterSpacing: "0.13em",
+                textTransform: "uppercase", color: "#6B7280",
+              }}>Founder · Ayra Farm Labs</p>
+              <svg className="mt-3 w-28 h-5 ml-auto" viewBox="0 0 112 20" fill="none">
+                <path d="M4 16 Q28 4 56 10 Q84 16 108 4" stroke="#1B6B3A" strokeWidth="1.5" strokeOpacity="0.28" strokeLinecap="round" fill="none" />
+                <circle cx="4" cy="16" r="2" fill="#1B6B3A" fillOpacity="0.35" />
+                <circle cx="108" cy="4" r="2" fill="#1B6B3A" fillOpacity="0.35" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* ── ENVELOPE BODY (z-index 2 masks the rising letter) ── */}
+        <div
+          style={{
+            height: 168,
+            background: "linear-gradient(180deg, #2E8B57 0%, #1B6B3A 100%)",
+            borderRadius: "0 0 12px 12px",
+            position: "relative",
+            zIndex: 2,
+            willChange: "transform, opacity",
+            boxShadow: "0 14px 52px rgba(27,107,58,0.30)",
+            border: "1px solid rgba(27,107,58,0.5)",
+            borderTop: "none",
+            opacity: stage >= 1 ? 1 : 0,
+            transform: stage >= 1 ? "translateY(0) scale(1)" : "translateY(18px) scale(0.96)",
+            transition: "opacity 0.5s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
+        >
+          {/* Left wing */}
+          <div style={{ position: "absolute", inset: 0, clipPath: "polygon(0 0, 44% 53%, 0 100%)", background: "#165C30" }} />
+          {/* Right wing */}
+          <div style={{ position: "absolute", inset: 0, clipPath: "polygon(100% 0, 56% 53%, 100% 100%)", background: "#165C30" }} />
+          {/* Bottom interior triangle */}
+          <div style={{ position: "absolute", inset: 0, clipPath: "polygon(0 100%, 50% 57%, 100% 100%)", background: "#0F4222" }} />
+
+          {/* Top flap — rotates open revealing letter inside */}
+          <div style={{
+            position: "absolute",
+            top: 0, left: 0, right: 0, height: 108,
+            background: "linear-gradient(165deg, #35A066 0%, #2E8B57 100%)",
+            clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+            transformOrigin: "top center",
+            willChange: "transform",
+            transform: stage >= 2
+              ? "perspective(800px) rotateX(-175deg)"
+              : "perspective(800px) rotateX(0deg)",
+            transition: "transform 1.1s cubic-bezier(0.4, 0, 0.15, 1)",
+            zIndex: 10,
+          }} />
+
+          {/* Wax seal */}
+          <div style={{
+            position: "absolute",
+            top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 56, height: 56, borderRadius: "50%",
+            background: "radial-gradient(circle at 36% 33%, #35A066, #1B6B3A 52%, #113F23 100%)",
+            boxShadow: "0 5px 18px rgba(27,107,58,0.55), inset 0 1px 4px rgba(255,255,255,0.25)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "rgba(255,255,255,0.96)",
+            fontFamily: "var(--font-cinzel, serif)",
+            fontWeight: 700, fontSize: "1.1rem", letterSpacing: "1px",
+            zIndex: 6,
+            opacity: stage >= 1 ? 1 : 0,
+            transition: "opacity 0.5s ease 0.3s",
+          }}>A</div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+// =============================================================================
 // FADE IN ANIMATION WRAPPER
 // =============================================================================
-function FadeInSection({ children, className ="", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+function FadeInSection({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -218,9 +267,8 @@ function FadeInSection({ children, className ="", delay = 0 }: { children: React
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        isVisible ?"opacity-100 translate-y-0" :"opacity-0 translate-y-5"
-      } ${className}`}
+      className={`transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+        } ${className}`}
     >
       {children}
     </div>
@@ -230,7 +278,7 @@ function FadeInSection({ children, className ="", delay = 0 }: { children: React
 // =============================================================================
 // ANIMATED COUNTER
 // =============================================================================
-function AnimatedCounter({ target, suffix ="" }: { target: number; suffix?: string }) {
+function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
   const [count, setCount] = useState(0)
   const [hasAnimated, setHasAnimated] = useState(false)
@@ -289,15 +337,15 @@ export default function LandingPage() {
   const [buyerType, setBuyerType] = useState<string | null>(null)
   const [formSubmitted, setFormSubmitted] = useState(false)
   const [formData, setFormData] = useState({
-    fullName:"",
-    company:"",
-    phone:"",
-    email:"",
-    crops:"",
-    volume:"",
-    landLocation:"",
-    acres:"",
-    landUse:"",
+    fullName: "",
+    company: "",
+    phone: "",
+    email: "",
+    crops: "",
+    volume: "",
+    landLocation: "",
+    acres: "",
+    landUse: "",
   })
 
   useEffect(() => {
@@ -312,7 +360,7 @@ export default function LandingPage() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
     if (element) {
-      element.scrollIntoView({ behavior:"smooth" })
+      element.scrollIntoView({ behavior: "smooth" })
     }
     setMobileMenuOpen(false)
   }
@@ -323,31 +371,31 @@ export default function LandingPage() {
   }
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior:"smooth" })
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   const navLinks = [
-    { label:"How It Works", id:"how-it-works" },
-    { label:"Services", id:"services" },
-    { label:"Traceability", id:"traceability" },
-    { label:"Why Ayra", id:"about" },
-    { label:"About Us", id:"team" },
-    { label:"Contact", id:"contact" },
+    { label: "How It Works", id: "how-it-works" },
+    { label: "Services", id: "services" },
+    { label: "Traceability", id: "traceability" },
+    { label: "Why Ayra", id: "about" },
+    { label: "About Us", id: "team" },
+    { label: "Contact", id: "contact" },
   ]
 
-  const buyerTypes = ["Brand / FMCG","HoReCa","Food Processor","Exporter"]
+  const buyerTypes = ["Brand / FMCG", "HoReCa", "Food Processor", "Exporter"]
 
   return (
     <main className="min-h-screen overflow-x-hidden w-full relative">
       {/* Global Universal Background */}
-      <div 
+      <div
         className="fixed inset-0 -z-10"
         style={{
-          background:"linear-gradient(135deg, #f0fdf4 0%, #dcfce7 30%, #f9fafb 70%, #f4fbf6 100%)"
+          background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 30%, #f9fafb 70%, #f4fbf6 100%)"
         }}
       />
       {/* Global Grid Pattern Overlay */}
-      <div 
+      <div
         className="fixed inset-0 -z-10 opacity-[0.03]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
@@ -357,9 +405,8 @@ export default function LandingPage() {
       {/* SECTION 1: NAVIGATION BAR */}
       {/* ===================================================================== */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ?"bg-white shadow-sm" :"bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white shadow-sm" : "bg-transparent"
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
@@ -460,7 +507,7 @@ export default function LandingPage() {
                 <h1 className="font-black tracking-tight text-[#0D1B0F] leading-[1.05] mb-5"
                   style={{ fontSize: "clamp(3rem, 6.5vw, 5.8rem)", letterSpacing: "-0.02em", fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
                   India&apos;s first <span className="text-[#1B6B3A] italic"><AnimatedFaaS /></span>
-                  <br />Farms as a Service.
+                  <br />Farming as a Service.
                 </h1>
 
                 {/* Subheadline */}
@@ -508,23 +555,12 @@ export default function LandingPage() {
             <p className="text-xs font-medium tracking-widest text-[#9CA3AF] uppercase whitespace-nowrap">
               Backed by
             </p>
-            <div className="flex items-center gap-8 flex-wrap justify-center">
-              {/* AgHub logo */}
+            <div className="flex items-center justify-center">
               <img
                 src="/AgHub-Logo-1030x489.png"
                 alt="AgHub PJTSAU"
                 className="h-8 object-contain opacity-70 hover:opacity-100 transition-opacity"
               />
-              {/* APEDA logo */}
-              <img
-                src="/apeda-logo.png"
-                alt="APEDA"
-                className="h-8 object-contain opacity-70 hover:opacity-100 transition-opacity"
-              />
-              {/* Text badge */}
-              <span className="text-xs font-semibold text-[#6B7280] border border-[#E5E7EB] px-3 py-1.5 rounded-full">
-                AgHub Incubatee
-              </span>
             </div>
           </div>
         </div>
@@ -636,43 +672,43 @@ export default function LandingPage() {
                 {[
                   {
                     icon: ClipboardList,
-                    step:"1",
-                    title:"You specify",
-                    description:"Crop type, grade, quantity, timeline.",
-                    badge:"24 hours",
-                    badgeLabel:"response time",
+                    step: "1",
+                    title: "You specify your exact requirements",
+                    description: "Crop type, grade, quantity, timeline.",
+                    badge: "24 hours",
+                    badgeLabel: "response time",
                   },
                   {
                     icon: MapPin,
-                    step:"2",
-                    title:"We match land",
-                    description:"Soil/season/water assessment.",
-                    badge:"5 days",
-                    badgeLabel:"feasibility report",
+                    step: "2",
+                    title: "We match land",
+                    description: "Soil/season/water assessment.",
+                    badge: "5 days",
+                    badgeLabel: "feasibility report",
                   },
                   {
                     icon: Sprout,
-                    step:"3",
-                    title:"We grow",
-                    description:"Full crop cycle, weekly geo-tagged photos.",
-                    badge:"Full cycle",
-                    badgeLabel:"real-time",
+                    step: "3",
+                    title: "We grow",
+                    description: "Full crop cycle, weekly geo-tagged photos.",
+                    badge: "Full cycle",
+                    badgeLabel: "real-time",
                   },
                   {
                     icon: FlaskConical,
-                    step:"4",
-                    title:"We harvest",
-                    description:"Scientific grade sorting and quality testing.",
-                    badge:"48 hours",
-                    badgeLabel:"quality approval",
+                    step: "4",
+                    title: "We harvest",
+                    description: "Scientific grade sorting and quality testing.",
+                    badge: "48 hours",
+                    badgeLabel: "quality approval",
                   },
                   {
                     icon: Truck,
-                    step:"5",
-                    title:"We deliver with docs",
-                    description:"Doorstep delivery with full doc pack.",
-                    badge:"On schedule",
-                    badgeLabel:"",
+                    step: "5",
+                    title: "We deliver with docs",
+                    description: "Doorstep delivery with full doc pack.",
+                    badge: "On schedule",
+                    badgeLabel: "",
                   },
                 ].map((step, index) => (
                   <FadeInSection key={index}>
@@ -748,6 +784,7 @@ export default function LandingPage() {
                 title: "Contract Farming",
                 description: "Full crop cycle management from requirement to harvest, with weekly photo updates and complete documentation.",
                 bullets: ["Requirement-matched crop growing", "Weekly geo-tagged photo updates", "Accredited lab testing", "Full documentation pack included"],
+                image: "/contract-farming.jpg",
               },
               {
                 icon: FileText,
@@ -755,12 +792,13 @@ export default function LandingPage() {
                 title: "Documented Produce Supply",
                 description: "Recurring supply with batch-level traceability. QR codes on every package linking to full field history.",
                 bullets: ["Batch-level QR traceability", "Grade-sorted produce", "Compliant labelling", "Recurring supply contracts"],
+                image: "/document.jpg",
               },
             ].map((service, index) => (
               <FadeInSection key={index}>
                 <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden h-full hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col">
-                  <div className="h-36 bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] flex items-center justify-center">
-                    <service.icon className="w-14 h-14 text-[#1B6B3A]/30" />
+                  <div className="h-52 overflow-hidden">
+                    <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="p-6 flex flex-col flex-1">
                     <span className="inline-block px-3 py-1 rounded-full bg-[#1B6B3A]/[0.08] text-xs font-medium text-[#1B6B3A] mb-3 self-start">{service.tag}</span>
@@ -788,10 +826,10 @@ export default function LandingPage() {
             <p className="text-xs font-medium tracking-widest text-[#9CA3AF] uppercase mb-4">Also available</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { icon: Award,     title: "Supply Chain Audit",    desc: "Field-level audit + transition roadmap" },
-                { icon: Leaf,      title: "Seasonal Subscription", desc: "Locked volumes & predictable supply" },
-                { icon: Globe,     title: "Export-Ready Produce",  desc: "APEDA · EU · Gulf compliance docs" },
-                { icon: MapPinned, title: "Audit & Advisory",      desc: "Documentation gap analysis" },
+                { icon: Award, title: "Supply Chain Audit", desc: "Field-level audit + transition roadmap" },
+                { icon: Leaf, title: "Seasonal Subscription", desc: "Locked volumes & predictable supply" },
+                { icon: Globe, title: "Export-Ready Produce", desc: "APEDA · EU · Gulf compliance docs" },
+                { icon: MapPinned, title: "Audit & Advisory", desc: "Documentation gap analysis" },
               ].map((s, i) => (
                 <div key={i} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:border-[#1B6B3A]/40 hover:shadow-md hover:-translate-y-1 hover:bg-[#F0FDF4] transition-all duration-200 cursor-pointer">
                   <div className="w-9 h-9 rounded-lg bg-[#F0FDF4] flex items-center justify-center mb-3">
@@ -843,18 +881,18 @@ export default function LandingPage() {
             <FadeInSection>
               <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 md:p-8 h-full">
                 <h3 className="text-xl font-bold text-[#111827] mb-6">Documentation Pack</h3>
-                
+
                 {/* Document Grid - 8 items */}
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { icon: FlaskConical, label:"Soil Test Report" },
-                    { icon: MapPinned, label:"GPS Field Map" },
-                    { icon: FileText, label:"Input Application Log" },
-                    { icon: Droplets, label:"Irrigation Log" },
-                    { icon: Award, label:"Harvest Certificate" },
-                    { icon: TestTube, label:"Lab Quality Test" },
-                    { icon: FileCheck, label:"Grade Certificate" },
-                    { icon: Truck, label:"Delivery Note" },
+                    { icon: FlaskConical, label: "Soil Test Report" },
+                    { icon: MapPinned, label: "GPS Field Map" },
+                    { icon: FileText, label: "Input Application Log" },
+                    { icon: Droplets, label: "Irrigation Log" },
+                    { icon: Award, label: "Harvest Certificate" },
+                    { icon: TestTube, label: "Lab Quality Test" },
+                    { icon: FileCheck, label: "Grade Certificate" },
+                    { icon: Truck, label: "Delivery Note" },
                   ].map((doc, index) => (
                     <div
                       key={index}
@@ -873,31 +911,46 @@ export default function LandingPage() {
 
             {/* Right Column - QR Traceability Feature */}
             <FadeInSection>
-              <div className="bg-white border border-[#E5E7EB] rounded-xl p-8 md:p-10 h-full">
-                <div className="flex flex-col md:flex-row gap-8">
-                  {/* QR Code */}
-                  <div className="flex-shrink-0 mx-auto md:mx-0">
-                    <div className="w-44 h-44 border-2 border-dashed border-[#E5E7EB] rounded-xl flex items-center justify-center bg-[#F9FAFB]">
-                      <ScanLine className="w-16 h-16 text-[#1B6B3A]" />
-                    </div>
-                  </div>
+              <div className="bg-white border border-[#E5E7EB] rounded-xl p-8 md:p-10 h-full flex flex-col md:flex-row gap-8 md:items-start">
+                {/* QR Code */}
+                <div className="flex-shrink-0 mx-auto md:mx-0 relative w-44 h-44 rounded-xl overflow-hidden bg-white shadow-sm border border-[#E5E7EB] p-3">
+                  <svg viewBox="0 0 21 21" className="w-full h-full" shapeRendering="crispEdges">
+                    {[
+                      "111111101011001111111","100000100101101000001","101110101010101011101",
+                      "101110100100001011101","101110101011001011101","100000100101101000001",
+                      "111111101010101111111","000000001101010000000","101100100110101101011",
+                      "010011011001010110100","101001000110101001010","010110101001010100101",
+                      "101001011010101011010","000000001010100000010","111111101010011011001",
+                      "100000100111001001110","101110101000101010001","101110100110010101100",
+                      "101110101001101000011","100000100100001101000","111111101011011001011",
+                    ].map((row, r) =>
+                      [...row].map((cell, c) =>
+                        cell === "1" ? <rect key={`${r}-${c}`} x={c} y={r} width="1" height="1" fill="#1B6B3A" /> : null
+                      )
+                    )}
+                  </svg>
+                  <div style={{
+                    position: "absolute", left: 8, right: 8, height: 2, borderRadius: 9999,
+                    background: "linear-gradient(90deg, transparent, #1B6B3A, transparent)",
+                    animation: "qrscan 2s ease-in-out infinite",
+                  }} />
+                  <style>{`@keyframes qrscan{0%,100%{top:10px;opacity:.4}50%{top:calc(100% - 10px);opacity:.9}}`}</style>
+                </div>
 
-                  {/* Content */}
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-[#111827] mb-3">Scan to see the full journey</h3>
-                    <p className="text-[#6B7280] mb-6">
-                      Every package has a QR code linking to its complete field-to-delivery history.
-                    </p>
-
-                    <ul className="space-y-3">
-                      {["Instant traceability","6-page detailed report","Share with auditors","Build consumer trust"].map((item, index) => (
-                        <li key={index} className="flex items-center gap-3 text-[#4B5563] p-2 rounded-lg hover:bg-[#F0FDF4] transition-colors duration-150 cursor-default">
-                          <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0" />
-                          <span className="text-base">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                {/* Content */}
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-[#111827] mb-3">Scan to see the full journey</h3>
+                  <p className="text-[#6B7280] mb-6">
+                    Every package has a QR code linking to its complete field-to-delivery history.
+                  </p>
+                  <ul className="space-y-3">
+                    {["Instant traceability", "6-page detailed report", "Share with auditors", "Build consumer trust"].map((item, index) => (
+                      <li key={index} className="flex items-center gap-3 text-[#4B5563] p-2 rounded-lg hover:bg-[#F0FDF4] transition-colors duration-150 cursor-default">
+                        <CheckCircle className="w-5 h-5 text-[#1B6B3A] flex-shrink-0" />
+                        <span className="text-base">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </FadeInSection>
@@ -914,77 +967,69 @@ export default function LandingPage() {
       <section id="about" className="py-12 md:py-16  overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Founder's Note */}
-          <FadeInSection className="mb-16 text-center">
-            <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-4">
-              Why Ayra Exists
-            </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827] mb-10" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>India's farmland didn't fail. <span className="text-[#1B6B3A]">The system did.</span>
-            </h2>
+          <FadeInSection className="mb-16">
+            <div className="text-center mb-10">
+              <p className="text-xs font-medium tracking-widest text-[#1B6B3A] uppercase mb-4">
+                Why Ayra Exists
+              </p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#111827]" style={{ fontFamily: "var(--font-poppins, sans-serif)", fontWeight: 800 }}>
+                A Letter from the <span className="text-[#1B6B3A]">Founder</span>
+              </h2>
+            </div>
 
-            <div className="flex flex-col lg:flex-row gap-12 mb-12 items-start">
-              {/* LEFT — Founder note */}
-              <div className="flex-1 space-y-4 text-[#4B5563] leading-relaxed text-base">
-                <p>
-                  India&apos;s agriculture didn&apos;t fail because the land was bad. It fragmented.
-                  Generation after generation, farmland passed down through families — divided, subdivided,
-                  until what was once a productive holding became too small to farm economically and too
-                  scattered to manage scientifically. Today, Telangana has millions of acres of farmland
-                  sitting underproductive — not abandoned, but adrift.
-                </p>
-                <p>
-                  At the same time, businesses that depend on agricultural raw materials are navigating one
-                  of the most frustrating procurement realities in India. The sector is unorganised. Supply is
-                  unreliable. Quality is inconsistent. And traceable, documented, transparent sourcing from
-                  farm to factory? Almost impossible to find at scale.
-                </p>
-                <p>
-                  And at the centre of all of it — the farmer. Working harder every season with less return.
-                  Without access to modern agronomic practices, quality inputs, or organised market linkages,
-                  the person doing the most essential work in the chain is also the one absorbing the most
-                  risk and capturing the least value.
-                </p>
-                <p>
-                  We built Ayra Farm Labs because we believe this is a solvable problem — not with technology
-                  alone, but with professional, science-backed farm management that works for everyone in the chain.
-                </p>
-                <p>
-                  We are three people from very different worlds — business, technology, and agronomy. We came
-                  together because solving this required all three. And because someone had to start.
-                </p>
-                <div className="pt-6 border-t border-[#E5E7EB]">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-sm flex-shrink-0"
-                      style={{
-                        background: "linear-gradient(135deg, #1B6B3A 0%, #2E8B57 100%)",
-                        boxShadow: "0 4px 16px rgba(27,107,58,0.3)",
-                      }}
-                    >
-                      YG
-                    </div>
-                    <div>
-                      <p
-                        className="font-bold text-[#111827] mb-0.5"
-                        style={{ fontFamily: "var(--font-playfair, serif)", fontSize: "1.1rem" }}
-                      >
-                        Yashwanth Gorenka
-                      </p>
-                      <p className="text-xs tracking-wider uppercase" style={{ color: "#1B6B3A", letterSpacing: "0.12em" }}>
-                        Founder · Ayra Farm Labs
-                      </p>
-                    </div>
+            {/* Letter — envelope animation */}
+            <div className="mb-10">
+              <FounderLetterEnvelope />
+            </div>
+
+            {/* For Whom — 3 cards below the letter */}
+            <div className="grid md:grid-cols-3 gap-6 mt-8">
+              {[
+                {
+                  label: "For the landowner",
+                  icon: MapPin,
+                  text: "A trusted operating partner who manages your land transparently, improves its productivity, and keeps you informed every step of the way.",
+                  cta: "Partner with us",
+                },
+                {
+                  label: "For the business",
+                  icon: PackageCheck,
+                  text: "A single accountable source for traceable, documented, quality-assured agricultural supply. No middlemen opacity. No season-to-season uncertainty.",
+                  cta: "Get a quote",
+                },
+                {
+                  label: "For the farmer",
+                  icon: Sprout,
+                  text: "An organised, supported way to grow. With the right knowledge, the right inputs, and a system that finally works in their favour.",
+                  cta: "Join the network",
+                },
+              ].map((card, i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl border p-8 flex flex-col"
+                  style={{
+                    background: "#F0FDF4",
+                    border: "1.5px solid #BBF7D0",
+                    boxShadow: "0 4px 16px rgba(27,107,58,0.08)",
+                  }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 flex-shrink-0"
+                    style={{ background: "rgba(27,107,58,0.08)" }}
+                  >
+                    <card.icon className="w-6 h-6" style={{ color: "#1B6B3A" }} />
                   </div>
-                  {/* Decorative curve line */}
-                  <svg className="mt-4 w-32 h-6" viewBox="0 0 128 24" fill="none">
-                    <path d="M4 20 Q32 4 64 12 Q96 20 124 6" stroke="#1B6B3A" strokeWidth="1.5" strokeOpacity="0.3" strokeLinecap="round" fill="none"/>
-                    <circle cx="4" cy="20" r="2.5" fill="#1B6B3A" fillOpacity="0.4"/>
-                    <circle cx="124" cy="6" r="2.5" fill="#1B6B3A" fillOpacity="0.4"/>
-                  </svg>
+                  <p className="text-lg font-bold text-[#111827] mb-3">{card.label}</p>
+                  <p className="text-[#4B5563] leading-relaxed text-sm flex-1 mb-5">{card.text}</p>
+                  <a
+                    href="#contact"
+                    className="flex items-center gap-2 text-sm font-semibold hover:gap-3 transition-all duration-200"
+                    style={{ color: "#1B6B3A" }}
+                  >
+                    {card.cta} <ArrowRight className="w-4 h-4" />
+                  </a>
                 </div>
-              </div>
-
-              {/* RIGHT — Stacked flash cards */}
-              <ForWhomCards />
+              ))}
             </div>
           </FadeInSection>
 
@@ -1071,7 +1116,7 @@ export default function LandingPage() {
             <FadeInSection className="flex flex-col">
               <div className="bg-white border border-[#E5E7EB] rounded-xl p-8 md:p-10 flex-grow shadow-sm hover:shadow-md transition-shadow duration-300">
                 <h3 className="text-xl font-bold text-[#111827] mb-6">Business Inquiries</h3>
-                
+
                 {/* Contact Details */}
                 <div className="space-y-6 mb-10">
                   <div className="flex items-start gap-4 group hover:bg-[#F0FDF4] rounded-xl p-3 -mx-3 transition-all duration-200 cursor-default">
@@ -1156,11 +1201,10 @@ export default function LandingPage() {
                             key={type}
                             type="button"
                             onClick={() => setBuyerType(type)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                              buyerType === type
-                                ?"bg-[#1B6B3A] text-white"
-                                :"bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#1B6B3A]"
-                            }`}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${buyerType === type
+                              ? "bg-[#1B6B3A] text-white"
+                              : "bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#1B6B3A]"
+                              }`}
                           >
                             {type}
                           </button>
@@ -1170,7 +1214,7 @@ export default function LandingPage() {
 
                     {buyerType && (
                       <div className="space-y-4">
-                        {buyerType ==="Landowner" ? (
+                        {buyerType === "Landowner" ? (
                           <>
                             <div>
                               <label className="block text-sm font-medium text-[#111827] mb-1">
@@ -1377,11 +1421,11 @@ export default function LandingPage() {
             <div>
               <h4 className="text-white font-bold mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                {["How It Works","Services","Traceability","Why Ayra","About Us","Contact"].map((link) => (
+                {["How It Works", "Services", "Traceability", "Why Ayra", "About Us", "Contact"].map((link) => (
                   <li key={link}>
                     <button
                       onClick={() =>
-                        scrollToSection(link === "About Us" ? "team" : link.toLowerCase().replace(/ /g,"-"))
+                        scrollToSection(link === "About Us" ? "team" : link.toLowerCase().replace(/ /g, "-"))
                       }
                       className="text-sm text-[#9CA3AF] hover:text-white transition-colors"
                     >
@@ -1396,7 +1440,7 @@ export default function LandingPage() {
             <div>
               <h4 className="text-white font-bold mb-4">Services</h4>
               <ul className="space-y-2">
-                {["Contract Farming","Documented Supply","Export-Ready","Seasonal Subscription","Audit & Advisory",
+                {["Contract Farming", "Documented Supply", "Export-Ready", "Seasonal Subscription", "Audit & Advisory",
                 ].map((service) => (
                   <li key={service}>
                     <button
@@ -1423,7 +1467,7 @@ export default function LandingPage() {
 
           {/* Certification Badges */}
           <div className="flex flex-wrap justify-center gap-4 py-6">
-            {["AgHub","APEDA"].map((badge) => (
+            {["AgHub", "APEDA"].map((badge) => (
               <span
                 key={badge}
                 className="px-4 py-2 bg-[#1F2937] rounded text-xs text-[#6B7280]"
@@ -1452,9 +1496,8 @@ export default function LandingPage() {
       {/* ===================================================================== */}
       <button
         onClick={scrollToTop}
-        className={`fixed right-6 z-40 w-12 h-12 bg-[#1B6B3A] hover:bg-[#155530] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${
-          showScrollTop ?"opacity-100" :"opacity-0 pointer-events-none"
-        } bottom-20 md:bottom-8`}
+        className={`fixed right-6 z-40 w-12 h-12 bg-[#1B6B3A] hover:bg-[#155530] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${showScrollTop ? "opacity-100" : "opacity-0 pointer-events-none"
+          } bottom-20 md:bottom-8`}
         aria-label="Scroll to top"
       >
         <ChevronUp className="w-6 h-6" />
